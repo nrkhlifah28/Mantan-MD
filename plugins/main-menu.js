@@ -28,7 +28,7 @@ const handler = async (m, { conn, usedPrefix: _P, isOwner }) => {
 					? p.tags.map(
 							(v) =>
 								v.charAt(v.length >= 1 ? 0 : v.length).toUpperCase() +
-								v.slice(1)
+								v.slice(1),
 					  )
 					: [p.tags][0],
 			});
@@ -56,7 +56,7 @@ const handler = async (m, { conn, usedPrefix: _P, isOwner }) => {
 									menu.tags &&
 									menu.tags.includes(tag) &&
 									menu.help &&
-									!menu.owner
+									!menu.owner,
 							).map((menu) => {
 								return menu.help
 									.map((help) => {
@@ -69,7 +69,7 @@ const handler = async (m, { conn, usedPrefix: _P, isOwner }) => {
 									.join("\n");
 							}),
 							// footer,
-						].join("\n")
+						].join("\n"),
 				);
 			}),
 		after,
@@ -93,18 +93,18 @@ const handler = async (m, { conn, usedPrefix: _P, isOwner }) => {
 			`%(${Object.keys(replace)
 				.sort((a, b) => b.length - a.length)
 				.join("|")})`,
-			"g"
+			"g",
 		),
-		(_, name) => "" + replace[name]
+		(_, name) => "" + replace[name],
 	);
-  
+
 	await conn.sendMessage(
 		m.chat,
 		{
 			text,
 			mentions: [m.sender],
 		},
-		{ quoted: m }
+		{ quoted: m },
 	);
 };
 handler.help = ["menu", "help"];

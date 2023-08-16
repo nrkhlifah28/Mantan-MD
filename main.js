@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from "url";
 import { createRequire } from "module"; // Bring in the ability to create the 'require' method
 global._filename = function filename(
 	pathURL = import.meta.url,
-	rmPrefix = platform !== "win32"
+	rmPrefix = platform !== "win32",
 ) {
 	return rmPrefix
 		? /file:\/\/\//.test(pathURL)
@@ -48,7 +48,6 @@ import { makeWASocket, protoType, serialize } from "./lib/simple.js";
 
 import { mongoDB, mongoDBV2 } from "./lib/mongoDB.js";
 
-const { CONNECTING } = ws;
 const { chain } = lodash;
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3000;
 
@@ -71,7 +70,7 @@ global.API = (name, path = "/", query = {}, apikeyqueryname) =>
 									],
 						  }
 						: {}),
-				})
+				}),
 		  )
 		: "");
 
@@ -82,15 +81,15 @@ global.timestamp = {
 const _dirname = global._dirname(import.meta.url);
 
 global.opts = new Object(
-	yargs(process.argv.slice(2)).exitProcess(false).parse()
+	yargs(process.argv.slice(2)).exitProcess(false).parse(),
 );
 global.prefix = new RegExp(
 	"^[" +
 		(opts["prefix"] || "xzXZ/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.\\-").replace(
 			/[|\\{}()[\]^$+*?.\-\^]/g,
-			"\\$&"
+			"\\$&",
 		) +
-		"]"
+		"]",
 );
 
 global.db = new Low(
@@ -100,7 +99,7 @@ global.db = new Low(
 		? opts["mongodbv2"]
 			? new mongoDBV2(opts["db"])
 			: new mongoDB(opts["db"])
-		: new JSONFile(`${opts?.[0] ? opts?.[0] + "_" : ""}database.json`)
+		: new JSONFile(`${opts?.[0] ? opts?.[0] + "_" : ""}database.json`),
 );
 global.DATABASE = global.db; // Backwards Compatibility
 global.loadDatabase = async function loadDatabase() {
@@ -111,7 +110,7 @@ global.loadDatabase = async function loadDatabase() {
 					clearInterval(this);
 					resolve(db.data == null ? global.loadDatabase() : db.data);
 				}
-			}, 1 * 1000)
+			}, 1 * 1000),
 		);
 	if (db.data !== null) return;
 	db.READ = true;
@@ -131,7 +130,7 @@ global.loadDatabase = async function loadDatabase() {
 loadDatabase();
 
 const { state, saveCreds } = await useMultiFileAuthState(
-	path.resolve("./sessions")
+	path.resolve("./sessions"),
 );
 const { version, isLatest } = await fetchLatestBaileysVersion();
 console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
@@ -140,14 +139,14 @@ const connectionOptions = {
 	version,
 	printQRInTerminal: true,
 	auth: state,
-	browser: ["Clara - MD", "Safari", "3.1.0"],
+	browser: ["Baileys", "Safari", "3.1.0"],
 };
 
 global.conn = makeWASocket(connectionOptions);
 conn.isInit = false;
 
 if (!opts["test"]) {
-	(await import("./server.js")).default(PORT);
+	// (await import("./server.js")).default(PORT);
 	setInterval(async () => {
 		if (global.db.data) await global.db.write().catch(console.error);
 		// if (opts['autocleartmp']) try {
@@ -160,7 +159,7 @@ function clearTmp() {
 	const tmp = [tmpdir(), join(_dirname, "./tmp")];
 	const filename = [];
 	tmp.forEach((dirname) =>
-		readdirSync(dirname).forEach((file) => filename.push(join(dirname, file)))
+		readdirSync(dirname).forEach((file) => filename.push(join(dirname, file))),
 	);
 	return filename.map((file) => {
 		const stats = statSync(file);
@@ -179,10 +178,7 @@ async function connectionUpdate(update) {
 	const code =
 		lastDisconnect?.error?.output?.statusCode ||
 		lastDisconnect?.error?.output?.payload?.statusCode;
-	if (
-		code &&
-		code !== DisconnectReason.loggedOut
-	) {
+	if (code && code !== DisconnectReason.loggedOut) {
 		await reloadHandler(true).catch(console.error);
 		global.timestamp.connect = new Date();
 	}
@@ -199,7 +195,7 @@ let handler = await import("./handler.js");
 global.reloadHandler = async function (restatConn) {
 	try {
 		const Handler = await import(`./handler.js?update=${Date.now()}`).catch(
-			console.error
+			console.error,
 		);
 		if (Object.keys(Handler || {}).length) handler = Handler;
 	} catch (e) {
@@ -292,7 +288,7 @@ global.reload = async (_ev, filename) => {
 		});
 		if (err)
 			conn.logger.error(
-				`syntax error while loading '${filename}'\n${format(err)}`
+				`syntax error while loading '${filename}'\n${format(err)}`,
 			);
 		else
 			try {
@@ -304,7 +300,7 @@ global.reload = async (_ev, filename) => {
 				conn.logger.error(`error require plugin '${filename}\n${format(e)}'`);
 			} finally {
 				global.plugins = Object.fromEntries(
-					Object.entries(global.plugins).sort(([a], [b]) => a.localeCompare(b))
+					Object.entries(global.plugins).sort(([a], [b]) => a.localeCompare(b)),
 				);
 			}
 	}
@@ -347,7 +343,7 @@ async function _quickTest() {
 					p.on("error", (_) => resolve(false));
 				}),
 			]);
-		})
+		}),
 	);
 	let [ffmpeg, ffprobe, ffmpegWebp, convert, magick, gm, find] = test;
 	console.log(test);
@@ -365,24 +361,24 @@ async function _quickTest() {
 
 	if (!s.ffmpeg) {
 		conn.logger.warn(
-			`Silahkan Install ffmpeg Terlebih Dahulu Agar Bisa Mengirim Video`
+			`Silahkan Install ffmpeg Terlebih Dahulu Agar Bisa Mengirim Video`,
 		);
 	}
 
 	if (s.ffmpeg && !s.ffmpegWebp) {
 		conn.logger.warn(
-			"Sticker Mungkin Tidak Beranimasi tanpa libwebp di ffmpeg (--enable-ibwebp while compiling ffmpeg)"
+			"Sticker Mungkin Tidak Beranimasi tanpa libwebp di ffmpeg (--enable-ibwebp while compiling ffmpeg)",
 		);
 	}
 
 	if (!s.convert && !s.magick && !s.gm) {
 		conn.logger.warn(
-			"Fitur Stiker Mungkin Tidak Bekerja Tanpa imagemagick dan libwebp di ffmpeg belum terinstall (pkg install imagemagick)"
+			"Fitur Stiker Mungkin Tidak Bekerja Tanpa imagemagick dan libwebp di ffmpeg belum terinstall (pkg install imagemagick)",
 		);
 	}
 }
 _quickTest()
 	.then(() =>
-		conn.logger.info("☑️ Quick Test Done , nama file session ~> creds.json")
+		conn.logger.info("☑️ Quick Test Done , nama file session ~> creds.json"),
 	)
 	.catch(console.error);

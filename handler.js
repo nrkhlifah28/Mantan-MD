@@ -36,7 +36,7 @@ export async function handler(chatUpdate) {
 				user,
 				chat,
 				settings,
-				conn
+				conn,
 			});
 		} catch (e) {
 			console.error(e);
@@ -102,7 +102,7 @@ export async function handler(chatUpdate) {
 
 		const ___dirname = path.join(
 			path.dirname(fileURLToPath(import.meta.url)),
-			"./plugins"
+			"./plugins",
 		);
 		for (let name in global.plugins) {
 			let plugin = global.plugins[name];
@@ -120,7 +120,7 @@ export async function handler(chatUpdate) {
 					// if (typeof e === 'string') continue
 					console.error(e);
 					for (let [jid] of global.owner.filter(
-						([number, _, isDeveloper]) => isDeveloper && number
+						([number, _, isDeveloper]) => isDeveloper && number,
 					)) {
 						let data = (await conn.onWhatsApp(jid))[0] || {};
 						if (data.exists)
@@ -128,7 +128,7 @@ export async function handler(chatUpdate) {
 								`*Plugin:* ${name}\n*Sender:* ${m.sender}\n*Chat:* ${
 									m.chat
 								}\n*Command:* ${m.text}\n\n\`\`\`${format(e)}\`\`\``.trim(),
-								data.jid
+								data.jid,
 							);
 					}
 				}
@@ -203,7 +203,7 @@ export async function handler(chatUpdate) {
 						? plugin.command.some((cmd) =>
 								cmd instanceof RegExp // RegExp in Array?
 									? cmd.test(command)
-									: cmd === command
+									: cmd === command,
 						  )
 						: typeof plugin.command === "string" // String?
 						? plugin.command === command
@@ -287,7 +287,7 @@ export async function handler(chatUpdate) {
 					this.reply(
 						m.chat,
 						`Limit Kamu Habis, Beli Dengan Cara *${usedPrefix}buy limit*`,
-						m
+						m,
 					);
 					continue; // Limit habis
 				}
@@ -295,7 +295,7 @@ export async function handler(chatUpdate) {
 					this.reply(
 						m.chat,
 						`Diperlukan Level ${plugin.level} Untuk Menggunakan Perintah Ini\n*Level Kamu:* ${_user.level}`,
-						m
+						m,
 					);
 					continue; // If the level has not been reached
 				}
@@ -335,7 +335,7 @@ export async function handler(chatUpdate) {
 							text = text.replace(new RegExp(key, "g"), "#HIDDEN#");
 						if (e.name)
 							for (let [jid] of global.owner.filter(
-								([number, _, isDeveloper]) => isDeveloper && number
+								([number, _, isDeveloper]) => isDeveloper && number,
 							)) {
 								let data = (await conn.onWhatsApp(jid))[0] || {};
 								if (data.exists)
@@ -345,9 +345,9 @@ export async function handler(chatUpdate) {
 										}\n*💬 Chat:* ${
 											m.chat
 										}\n*💻 Command:* ${usedPrefix}${command} ${args.join(
-											" "
+											" ",
 										)}\n📄 *Error Logs:*\n\n\`\`\`${text}\`\`\``.trim(),
-										data.jid
+										data.jid,
 									);
 							}
 						m.reply(text);
@@ -369,14 +369,14 @@ export async function handler(chatUpdate) {
 		console.error(e);
 	} finally {
 		try {
-			const isG = !m?.key?.remoteJid?.endsWith("net")
-			const sender = isG ? m?.key?.participant : m?.key?.remoteJid
+			const isG = !m?.key?.remoteJid?.endsWith("net");
+			const sender = isG ? m?.key?.participant : m?.key?.remoteJid;
 			console.log({
 				group: isG,
 				jid: sender,
 				sender,
 				raw_text: m?.message?.conversation,
-			})
+			});
 		} catch {}
 		if (opts["autoread"]) await this.readMessages([m.key]);
 	}
@@ -395,6 +395,7 @@ export async function participantsUpdate({ id, participants, action }) {
 	switch (action) {
 		case "add":
 		case "remove":
+			return;
 			if (chat.welcome) {
 				let groupMetadata =
 					(await this.groupMetadata(id)) || (conn.chats[id] || {}).metadata;
@@ -415,7 +416,7 @@ export async function participantsUpdate({ id, participants, action }) {
 										.replace("@subject", await this.getName(id))
 										.replace(
 											"@desc",
-											groupMetadata.desc?.toString() || "unknow"
+											groupMetadata.desc?.toString() || "unknow",
 										)
 								: chat.sBye || this.bye || conn.bye || "Bye, @user!"
 						).replace("@user", await this.getName(user));
@@ -430,7 +431,7 @@ export async function participantsUpdate({ id, participants, action }) {
 							text,
 							null,
 							false,
-							{ mentions: [user] }
+							{ mentions: [user] },
 						);
 					}
 				}
@@ -520,7 +521,7 @@ Untuk mematikan fitur ini, ketik
 			msg,
 			{
 				mentions: [participant],
-			}
+			},
 		);
 		this.copyNForward(msg.chat, msg).catch((e) => console.log(e, msg));
 	} catch (e) {

@@ -1,33 +1,32 @@
 import { watchFile, unwatchFile } from "fs";
+import axios from "axios";
 import chalk from "chalk";
 import { fileURLToPath } from "url";
 
 const configs = {
-  // Owner
-  owner: [["628xxx", "Xyroinee", true]],
-  mods: [],
-  prems: [],
-  // Info
-  packname: "anu - MD by",
-  author: "© Xyroinee",
+	// Owner
+	owner: [["628xxx", "Xyroinee", true]],
+	mods: [],
+	prems: [],
+	// Info
+	packname: "anu - MD by",
+	author: "© Xyroinee",
 
-  wm: "© anu By Xyroine",
-  // Info Wait
-  wait: "Sedang Di Proses, Mohon Tunggu....",
-  eror: "Terjadi Kesalahan Coba Lagi Nanti!",
-  multiplier: 69,
-  APIs: {
-    rose: "https:/api.itsrose.life"
-  },
+	// Info Wait
+	wait: "Sedang Di Proses, Mohon Tunggu....",
+	eror: "Terjadi Kesalahan Coba Lagi Nanti!",
+	APIs: {
+		rose: "https:/api.itsrose.life",
+	},
 
-  APIKeys: {
-    "https:/api.itsrose.life": "apikeymu",
-  },
-}
+	APIKeys: {
+		"https:/api.itsrose.life": "memek",
+	},
+};
 
 // Its should be ok, right?
 Object.assign(global, {
-  ...configs
+	...configs,
 });
 
 const file = fileURLToPath(import.meta.url);
