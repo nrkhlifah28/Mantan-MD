@@ -5,7 +5,7 @@ import path, { join } from "path";
 import { unwatchFile, watchFile } from "fs";
 import chalk from "chalk";
 
-import inserUsersDatas from "./lib/usersData.js"
+import inserUsersDatas from "./lib/usersData.js";
 
 const isNumber = (x) => typeof x === "number" && !isNaN(x);
 const delay = (ms) =>
@@ -38,15 +38,15 @@ export async function handler(chatUpdate) {
 		try {
 			// TODO: use loop to insert data instead of this;
 
-            // wtf is this.
+			// wtf is this.
 			let user = global.db.data.users[m.sender];
 			let chat = global.db.data.chats[m.chat];
-	        let settings = global.db.data.settings[this.user.jid];
-            inserUsersDatas({
-                user,
-                chat,
-                settings
-            })
+			let settings = global.db.data.settings[this.user.jid];
+			inserUsersDatas({
+				user,
+				chat,
+				settings,
+			});
 		} catch (e) {
 			console.error(e);
 		}
@@ -71,7 +71,7 @@ export async function handler(chatUpdate) {
 				.includes(m.sender);
 		const isPrems = isROwner || db.data.users[m.sender].premiumTime > 0;
 
-        /* Don't need this
+		/* Don't need this
 		if (opts["queque"] && m.text && !(isMods || isPrems)) {
 			let queque = this.msgqueque,
 				time = 1000 * 5;
@@ -377,8 +377,7 @@ export async function handler(chatUpdate) {
 	} catch (e) {
 		console.error(e);
 	} finally {
-		
-        /* Don't need this.
+		/* Don't need this.
         if (opts["queque"] && m.text) {
 			const quequeIndex = this.msgqueque.indexOf(m.id || m.key.id);
 			if (quequeIndex !== -1) this.msgqueque.splice(quequeIndex, 1);
@@ -552,8 +551,8 @@ export async function groupsUpdate(groupsUpdate) {
 }
 
 export async function deleteUpdate(message) {
-    /** Don't need this. Anoying */
-    return;
+	/** Don't need this. Anoying */
+	return;
 	try {
 		const { fromMe, id, participant } = message;
 		if (fromMe) return;
