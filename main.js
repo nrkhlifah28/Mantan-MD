@@ -34,7 +34,6 @@ import yargs from "yargs";
 import { spawn } from "child_process";
 import lodash from "lodash";
 import syntaxerror from "syntax-error";
-import chalk from "chalk";
 import { tmpdir } from "os";
 import { format } from "util";
 
@@ -42,11 +41,11 @@ import {
 	useMultiFileAuthState,
 	DisconnectReason,
 	fetchLatestBaileysVersion,
-} from "@adiwajshing/baileys";
+} from "@whiskeysockets/baileys";
 import { Low, JSONFile } from "lowdb";
 
 import { makeWASocket, protoType, serialize } from "./lib/simple.js";
-import storeSys from "./lib/store2.js";
+
 import { mongoDB, mongoDBV2 } from "./lib/mongoDB.js";
 
 const { CONNECTING } = ws;
@@ -75,7 +74,7 @@ global.API = (name, path = "/", query = {}, apikeyqueryname) =>
 				})
 		  )
 		: "");
-// global.Fn = function functionCallBack(fn, ...args) { return fn.call(global.conn, ...args) }
+
 global.timestamp = {
 	start: new Date(),
 };
@@ -131,11 +130,10 @@ global.loadDatabase = async function loadDatabase() {
 };
 loadDatabase();
 
-global.authFolder = storeSys.fixFileName(`${opts._[0] || ""}sessions`);
-let { state, saveCreds } = await useMultiFileAuthState(
+const { state, saveCreds } = await useMultiFileAuthState(
 	path.resolve("./sessions")
 );
-let { version, isLatest } = await fetchLatestBaileysVersion();
+const { version, isLatest } = await fetchLatestBaileysVersion();
 console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
 
 const connectionOptions = {
@@ -159,7 +157,7 @@ if (!opts["test"]) {
 }
 
 function clearTmp() {
-	const tmp = [tmpdir(), join(__dirname, "./tmp")];
+	const tmp = [tmpdir(), join(_dirname, "./tmp")];
 	const filename = [];
 	tmp.forEach((dirname) =>
 		readdirSync(dirname).forEach((file) => filename.push(join(dirname, file)))
@@ -172,51 +170,25 @@ function clearTmp() {
 	});
 }
 
-function clearSessions(folder = "sessions") {
-	let filename = [];
-	readdirSync(folder).forEach((file) => filename.push(join(folder, file)));
-	return filename.map((file) => {
-		let stats = statSync(file);
-		if (stats.isFile() && Date.now() - stats.mtimeMs >= 1000 * 60 * 120) {
-			// 1 hours
-			console.log("Deleted sessions", file);
-			return unlinkSync(file);
-		}
-		return false;
-	});
-}
-
 async function connectionUpdate(update) {
-	const {
-		receivedPendingNotifications,
-		connection,
-		lastDisconnect,
-		isOnline,
-		isNewLogin,
-	} = update;
-	if (isNewLogin) conn.isInit = true;
-	if (connection == "connecting")
-		console.log(chalk.redBright("Mengaktifkan Bot, Mohon tunggu sebentar..."));
-	if (connection == "open") console.log(chalk.green("Berhasil Tersambung"));
-	if (isOnline == true) console.log(chalk.green("Status Aktif"));
-	if (isOnline == false) console.log(chalk.red("Status Mati"));
-	if (receivedPendingNotifications)
-		console.log(chalk.yellow("Menunggu Pesan Baru"));
-	if (connection == "close")
-		console.log(
-			chalk.red("⏱Koneksi Terputus Dan Mencoba Menyambung Kembali...")
-		);
-	global.timestamp.connect = new Date();
+	console.log(update);
+	// /** @type {Partial<{ connection: import('@adiwajshing/baileys').ConnectionState['connection'], lastDisconnect: { error: Error | import('@hapi/boom').Boom, date: Date }, isNewLogin: import('@adiwajshing/baileys').ConnectionState['isNewLogin'] }>} */
+	const { connection, lastDisconnect, isNewLogin } = update;
+	if (isNewLogin) this.isInit = true;
+	// @ts-ignore
+	const code =
+		lastDisconnect?.error?.output?.statusCode ||
+		lastDisconnect?.error?.output?.payload?.statusCode;
 	if (
-		lastDisconnect &&
-		lastDisconnect.error &&
-		lastDisconnect.error.output &&
-		lastDisconnect.error.output.statusCode !== DisconnectReason.loggedOut &&
-		conn.ws.readyState !== CONNECTING
+		code &&
+		code !== DisconnectReason.loggedOut
 	) {
-		console.log(global.reloadHandler(true));
+		await reloadHandler(true).catch(console.error);
+		global.timestamp.connect = new Date();
 	}
-	if (global.db.data == null) await global.loadDatabase();
+	if (connection == "open") console.log("- opened connection -");
+
+	if (db.data == null) loadDatabase();
 }
 
 process.on("uncaughtException", console.error);

@@ -1,5 +1,3 @@
-import { generateWAMessage, getContentType } from "@whiskeysockets/baileys";
-
 const defaultMenu = {
 	before: ``,
 	header: `\`\`\`- %category \`\`\``,
@@ -87,7 +85,7 @@ const handler = async (m, { conn, usedPrefix: _P, isOwner }) => {
 		"%": "%",
 		P: _P,
 		name,
-		readMore,
+		readMore: "\n",
 		who: "@" + m.sender.replace(/[^0-9]/g, ""),
 	};
 	text = text.replace(

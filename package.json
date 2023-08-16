@@ -22,23 +22,22 @@
 		"whatsapp",
 		"wabot-aq"
 	],
-	"homepage": "https://github.com/Xyroinee/Clara-MD",
+	"homepage": "https://github.com/xct007/Mantan-MD",
 	"author": {
-		"name": "Xyroinee"
+		"name": "xct007"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Xyroinee/Clara-MD.git"
+		"url": "git+https://github.com/xct007/Mantan-MD.git"
 	},
 	"bugs": {
-		"url": "https://github.com/Xyroinee/Clara-MD/issues"
+		"url": "https://github.com/xct007/Mantan-MD/issues"
 	},
 	"license": "GPL-3.0-or-later",
 	"dependencies": {
-		"@adiwajshing/baileys": "npm:baileys@^6.0.7",
-		"@adiwajshing/keyed-db": "^0.2.4",
+		"@whiskeysockets/baileys": "^6.4.0",
 		"awesome-phonenumber": "^2.68.0",
-		"axios": "^1.3.4",
+		"axios": "^1.4.0",
 		"cfonts": "^3.1.1",
 		"chalk": "^5.0.1",
 		"cheerio": "^1.0.0-rc.12",
